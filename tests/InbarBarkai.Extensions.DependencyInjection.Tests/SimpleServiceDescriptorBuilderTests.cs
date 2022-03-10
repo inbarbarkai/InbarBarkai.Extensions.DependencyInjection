@@ -91,7 +91,7 @@ namespace InbarBarkai.Extensions.DependencyInjection.Tests
         {
             var services = new ServiceCollection();
             ServiceDescriptorBuilder.Create<SimpleService>()
-                .As<ISimpleService>()
+                .As<ISimpleService1>()
                 .AddTo(services);
 
             using var serviceProvider = services.BuildServiceProvider();
@@ -100,7 +100,7 @@ namespace InbarBarkai.Extensions.DependencyInjection.Tests
                 .Should()
                 .BeNull();
 
-            var instance = serviceProvider.GetService<ISimpleService>();
+            var instance = serviceProvider.GetService<ISimpleService1>();
 
             instance.Should()
                 .NotBeNull();
@@ -115,22 +115,25 @@ namespace InbarBarkai.Extensions.DependencyInjection.Tests
         {
             var services = new ServiceCollection();
             
-            builder.ServiceTypes.Count.Should().Be(1);
+            builder.ServiceTypes.Count.Should().Be(2);
             builder.AddTo(services);
 
             using var serviceProvider = services.BuildServiceProvider();
 
-            serviceProvider.GetService<SimpleService>()
-                .Should()
-                .BeNull();
+            var instance1 = serviceProvider.GetService<ISimpleService1>();
+            var instance2 = serviceProvider.GetService<ISimpleService2>();
 
-            var instance = serviceProvider.GetService<ISimpleService>();
-
-            instance.Should()
+            instance1.Should()
                 .NotBeNull();
+            instance2.Should()
+               .NotBeNull();
 
-            instance.Should()
+            instance1.Should()
                 .BeOfType<SimpleService>();
+            instance2.Should()
+                .BeOfType<SimpleService>();
+
+            instance1.Should().Be(instance2);
         }
 
         public static IEnumerable<object[]> AddSimpleServiceAsImplementedInterfacesSuccessData()
@@ -138,13 +141,15 @@ namespace InbarBarkai.Extensions.DependencyInjection.Tests
             yield return new object[] 
             { 
                 ServiceDescriptorBuilder.Create<SimpleService>()
+                    .SingleInstance()
                     .AsImplementedInterfaces()
             };
 
             yield return new object[] 
             {
                 ServiceDescriptorBuilder.Create<SimpleService>()
-                    .As<ISimpleService>()
+                    .SingleInstance()
+                    .As<ISimpleService1>()
                     .AsImplementedInterfaces()
             };
         }
