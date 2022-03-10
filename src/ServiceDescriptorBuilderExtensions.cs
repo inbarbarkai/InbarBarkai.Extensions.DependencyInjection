@@ -46,5 +46,15 @@ namespace InbarBarkai.Extensions.DependencyInjection
         {
             return builder.As(typeof(TServiceType));
         }
+
+        public static IServiceDescriptorBuilder AsImplementedInterfaces(this IServiceDescriptorBuilder builder)
+        {
+            MakeSure.NotNull(builder, nameof(builder));
+            foreach (var @interface in builder.ImplementationType.GetInterfaces())
+            {
+                builder.ServiceTypes.Add(@interface);
+            }
+            return builder;
+        }
     }
 }

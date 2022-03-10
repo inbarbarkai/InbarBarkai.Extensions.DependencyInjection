@@ -8,7 +8,7 @@ namespace InbarBarkai.Extensions.DependencyInjection
     {
         public ServiceLifetime ServiceLifetime { get; set; } = ServiceLifetime.Transient;
 
-        public ICollection<Type> ServiceTypes { get; set; } = new List<Type>();
+        public ICollection<Type> ServiceTypes { get; set; } = new HashSet<Type>();
 
         public Type ImplementationType { get; }
 

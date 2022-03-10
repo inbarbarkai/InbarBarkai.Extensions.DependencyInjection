@@ -2,6 +2,7 @@ using InbarBarkai.Extensions.DependencyInjection.Tests.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 using FluentAssertions;
+using System.Collections.Generic;
 
 namespace InbarBarkai.Extensions.DependencyInjection.Tests
 {
@@ -106,6 +107,46 @@ namespace InbarBarkai.Extensions.DependencyInjection.Tests
 
             instance.Should()
                 .BeOfType<SimpleService>();
+        }
+
+        [MemberData(nameof(AddSimpleServiceAsImplementedInterfacesSuccessData))]
+        [Theory]
+        public void AddSimpleServiceAsImplementedInterfacesSuccess(IServiceDescriptorBuilder builder)
+        {
+            var services = new ServiceCollection();
+            
+            builder.ServiceTypes.Count.Should().Be(1);
+            builder.AddTo(services);
+
+            using var serviceProvider = services.BuildServiceProvider();
+
+            serviceProvider.GetService<SimpleService>()
+                .Should()
+                .BeNull();
+
+            var instance = serviceProvider.GetService<ISimpleService>();
+
+            instance.Should()
+                .NotBeNull();
+
+            instance.Should()
+                .BeOfType<SimpleService>();
+        }
+
+        public static IEnumerable<object[]> AddSimpleServiceAsImplementedInterfacesSuccessData()
+        {
+            yield return new object[] 
+            { 
+                ServiceDescriptorBuilder.Create<SimpleService>()
+                    .AsImplementedInterfaces()
+            };
+
+            yield return new object[] 
+            {
+                ServiceDescriptorBuilder.Create<SimpleService>()
+                    .As<ISimpleService>()
+                    .AsImplementedInterfaces()
+            };
         }
     }
 }
