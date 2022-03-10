@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace InbarBarkai.Extensions.DependencyInjection.Tests
 {
-    public class ServiceDescriptorBuilderTests
+    public class SimpleServiceDescriptorBuilderTests
     {
         [Fact]
         public void AddSimpleServiceTransientSuccess()
