@@ -84,5 +84,28 @@ namespace InbarBarkai.Extensions.DependencyInjection.Tests
                 .Should()
                 .Be(instance1);
         }
+
+        [Fact]
+        public void AddSimpleServiceAsInterfaceSuccess()
+        {
+            var services = new ServiceCollection();
+            ServiceDescriptorBuilder.Create<SimpleService>()
+                .As<ISimpleService>()
+                .AddTo(services);
+
+            using var serviceProvider = services.BuildServiceProvider();
+                      
+            serviceProvider.GetService<SimpleService>()
+                .Should()
+                .BeNull();
+
+            var instance = serviceProvider.GetService<ISimpleService>();
+
+            instance.Should()
+                .NotBeNull();
+
+            instance.Should()
+                .BeOfType<SimpleService>();
+        }
     }
 }
