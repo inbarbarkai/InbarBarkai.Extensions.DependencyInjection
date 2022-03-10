@@ -1,4 +1,6 @@
 using System;
+using System.Linq.Expressions;
+using System.Reflection;
 using InbarBarkai.Extensions.DependencyInjection.Internal;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -55,6 +57,20 @@ namespace InbarBarkai.Extensions.DependencyInjection
                 builder.ServiceTypes.Add(@interface);
             }
             return builder;
+        }
+
+        public static IServiceDescriptorBuilder WithParameter(this IServiceDescriptorBuilder builder, Func<ParameterInfo, bool> isMatch, Expression<Func<IServiceProvider, ParameterInfo, object>> resolve)
+        {
+            var factoryBuilder = builder as FactoryServiceDescriptorBuilder;
+
+            if (factoryBuilder == null)
+            {
+                factoryBuilder = new FactoryServiceDescriptorBuilder(builder);
+            }
+
+            factoryBuilder.ParameterResolvers.Add(new ParameterResolver(isMatch, resolve));
+
+            return factoryBuilder;
         }
     }
 }

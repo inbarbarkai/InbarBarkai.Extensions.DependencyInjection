@@ -17,6 +17,13 @@ namespace InbarBarkai.Extensions.DependencyInjection
             this.ImplementationType = serviceType;
         }
 
+        protected ServiceDescriptorBuilder(IServiceDescriptorBuilder builder)
+        {
+            this.ImplementationType = builder.ImplementationType;
+            this.ServiceTypes = builder.ServiceTypes;
+            this.ServiceLifetime = builder.ServiceLifetime;
+        }
+
         public static IServiceDescriptorBuilder Create(Type serviceType)
         {
             if (serviceType is null)
