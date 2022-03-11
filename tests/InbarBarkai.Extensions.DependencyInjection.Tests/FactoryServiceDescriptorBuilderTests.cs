@@ -1,4 +1,6 @@
-﻿using FluentAssertions;
+﻿using System;
+using System.Collections.Generic;
+using FluentAssertions;
 using InbarBarkai.Extensions.DependencyInjection.Tests.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
@@ -7,20 +9,19 @@ namespace InbarBarkai.Extensions.DependencyInjection.Tests
 {
     public class FactoryServiceDescriptorBuilderTests
     {
-        [Fact]
-        public void AddFactoryServiceSuccess()
+        [MemberData(nameof(AddFactoryServiceSuccessData))]
+        [Theory]
+        public void AddFactoryServiceSuccess(IServiceDescriptorBuilder builder, Type serviceType)
         {
-            var services = new ServiceCollection();
-            ServiceDescriptorBuilder.Create<ServiceWithConstructorArguments>()
-                .InstancePerRequest()
-                .AsImplementedInterfaces()
-                .WithParameter(pi => pi.ParameterType == typeof(int), (sp, pi) => 10)
+            var services = new ServiceCollection()
+                .AddSingleton("something");
+            builder.WithParameter(pi => pi.ParameterType == typeof(int), (sp, pi) => 10)
                 .AddTo(services);
 
             using var serviceProvider = services.BuildServiceProvider();
 
-            var instance1 = serviceProvider.GetService<ISimpleService1>();
-            var instance2 = serviceProvider.GetService<ISimpleService1>();
+            var instance1 = serviceProvider.GetService(serviceType);
+            var instance2 = serviceProvider.GetService(serviceType);
 
             instance1.Should()
                 .NotBeNull();
@@ -31,6 +32,43 @@ namespace InbarBarkai.Extensions.DependencyInjection.Tests
             instance1.Should().NotBe(instance2);
             instance1.Should().BeOfType<ServiceWithConstructorArguments>();
             instance2.Should().BeOfType<ServiceWithConstructorArguments>();
+
+            ((ServiceWithConstructorArguments)instance1).Integer.Should().Be(10);
+            ((ServiceWithConstructorArguments)instance1).String.Should().Be("something");
+        }
+
+        public static IEnumerable<object[]> AddFactoryServiceSuccessData()
+        {
+            yield return new object[]
+            {
+                   ServiceDescriptorBuilder.Create<ServiceWithConstructorArguments>()
+                        .InstancePerRequest()
+                        .AsImplementedInterfaces(),
+                   typeof(ISimpleService1)
+            };
+
+            yield return new object[]
+            {
+                   ServiceDescriptorBuilder.Create<ServiceWithConstructorArguments>()
+                        .InstancePerRequest()
+                        .AsImplementedInterfaces(),
+                   typeof(ISimpleService2)
+            };
+
+            yield return new object[]
+            {
+                   ServiceDescriptorBuilder.Create<ServiceWithConstructorArguments>()
+                        .InstancePerRequest()
+                        .As<ISimpleService1>(),
+                   typeof(ISimpleService1)
+            };
+
+            yield return new object[]
+            {
+                   ServiceDescriptorBuilder.Create<ServiceWithConstructorArguments>()
+                        .InstancePerRequest(),
+                   typeof(ServiceWithConstructorArguments)
+            };
         }
     }
 }

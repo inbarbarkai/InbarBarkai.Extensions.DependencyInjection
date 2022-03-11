@@ -81,7 +81,7 @@ namespace InbarBarkai.Extensions.DependencyInjection
             else
             {
                 var methodInfo = typeof(ServiceProviderServiceExtensions).GetMethod(nameof(ServiceProviderServiceExtensions.GetService), new[] { typeof(IServiceProvider) });
-                value = Expression.Call(methodInfo.MakeGenericMethod(parameter.ParameterType));
+                value = Expression.Call(methodInfo.MakeGenericMethod(parameter.ParameterType), serviceProvider);
             }
             var argument = Expression.Parameter(parameter.ParameterType, parameter.Name);
             arguments.Add(argument);

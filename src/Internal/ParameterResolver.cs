@@ -15,6 +15,15 @@ namespace InbarBarkai.Extensions.DependencyInjection.Internal
             this.Resolve = resolve;
         }
 
+        public override bool Equals(object obj)
+        {
+            if (obj is ParameterResolver other)
+            {
+                return Equals(other);
+            }
+            return base.Equals(obj);
+        }
+
         public bool Equals(ParameterResolver other)
         {
             if (other == null)
