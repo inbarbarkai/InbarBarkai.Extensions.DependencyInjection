@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 using FluentAssertions;
 using System.Collections.Generic;
+using System;
 
 namespace InbarBarkai.Extensions.DependencyInjection.Tests
 {
@@ -41,7 +42,7 @@ namespace InbarBarkai.Extensions.DependencyInjection.Tests
             using var serviceProvider = services.BuildServiceProvider();
             using var scope1 = serviceProvider.CreateScope();
             using var scope2 = serviceProvider.CreateScope();
-           
+
             var instance1 = scope1.ServiceProvider.GetService<SimpleService>();
             var instance2 = scope2.ServiceProvider.GetService<SimpleService>();
 
@@ -95,7 +96,7 @@ namespace InbarBarkai.Extensions.DependencyInjection.Tests
                 .AddTo(services);
 
             using var serviceProvider = services.BuildServiceProvider();
-                      
+
             serviceProvider.GetService<SimpleService>()
                 .Should()
                 .BeNull();
@@ -109,12 +110,21 @@ namespace InbarBarkai.Extensions.DependencyInjection.Tests
                 .BeOfType<SimpleService>();
         }
 
+        [Fact]
+        public void AddSimpleServiceAsInterfaceInvalidOperationExcetpion()
+        {
+            Action action = () => ServiceDescriptorBuilder.Create<SimpleService>()
+                .As<ServiceWithConstructorArguments>();
+
+            action.Should().Throw<InvalidOperationException>();
+        }
+
         [MemberData(nameof(AddSimpleServiceAsImplementedInterfacesSuccessData))]
         [Theory]
         public void AddSimpleServiceAsImplementedInterfacesSuccess(IServiceDescriptorBuilder builder)
         {
             var services = new ServiceCollection();
-            
+
             builder.ServiceTypes.Count.Should().Be(2);
             builder.AddTo(services);
 
@@ -138,14 +148,14 @@ namespace InbarBarkai.Extensions.DependencyInjection.Tests
 
         public static IEnumerable<object[]> AddSimpleServiceAsImplementedInterfacesSuccessData()
         {
-            yield return new object[] 
-            { 
+            yield return new object[]
+            {
                 ServiceDescriptorBuilder.Create<SimpleService>()
                     .SingleInstance()
                     .AsImplementedInterfaces()
             };
 
-            yield return new object[] 
+            yield return new object[]
             {
                 ServiceDescriptorBuilder.Create<SimpleService>()
                     .SingleInstance()
@@ -153,5 +163,13 @@ namespace InbarBarkai.Extensions.DependencyInjection.Tests
                     .AsImplementedInterfaces()
             };
         }
+
+        [Fact]
+        public void CreateNullReferenceException()
+        {
+            Action action = () => ServiceDescriptorBuilder.Create(null);
+
+            action.Should().Throw<ArgumentNullException>();
+        }       
     }
 }
