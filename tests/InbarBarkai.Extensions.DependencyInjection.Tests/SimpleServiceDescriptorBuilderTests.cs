@@ -129,13 +129,30 @@ namespace InbarBarkai.Extensions.DependencyInjection.Tests
         /// <summary>
         /// Tests adding service as an interface with exception due to incompatibility.
         /// </summary>
-        [Fact]
-        public void AddSimpleServiceAsInterfaceArgumentException()
+        [MemberData(nameof(AddSimpleServiceAsInterfaceArgumentExceptionData))]
+        [Theory]
+        public void AddSimpleServiceAsInterfaceArgumentException(Action action)
         {
-            Action action = () => ServiceDescriptorBuilder.Create<SimpleService>()
-                .As<ServiceWithConstructorArguments>();
-
             action.Should().Throw<ArgumentException>();
+        }
+
+        /// <summary>
+        /// Gets the data for the <see cref="AddSimpleServiceAsInterfaceArgumentException(Action)"/> test.
+        /// </summary>
+        /// <returns>The data for the <see cref="AddSimpleServiceAsInterfaceArgumentException(Action)"/> test.</returns>
+        public static IEnumerable<object[]> AddSimpleServiceAsInterfaceArgumentExceptionData()
+        {
+            yield return new object[] 
+            {
+                new Action(() => ServiceDescriptorBuilder.Create<SimpleService>()
+                    .As<ServiceWithConstructorArguments>())
+            };
+
+            yield return new object[]
+            {
+                new Action(() => ServiceDescriptorBuilder.Create<AnotherSimpleService>()
+                    .As<SimpleService>())
+            };
         }
 
         /// <summary>
@@ -199,6 +216,6 @@ namespace InbarBarkai.Extensions.DependencyInjection.Tests
             Action action = () => ServiceDescriptorBuilder.Create(null);
 
             action.Should().Throw<ArgumentNullException>();
-        }       
+        }
     }
 }
