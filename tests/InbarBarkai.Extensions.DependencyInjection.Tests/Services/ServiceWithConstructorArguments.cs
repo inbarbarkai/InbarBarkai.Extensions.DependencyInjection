@@ -10,5 +10,10 @@
             this.Integer = integer;
             this.String = @string;
         }
+
+        public ServiceWithConstructorArguments(string @string)
+        {
+            this.String = @string;
+        }
     }
 }

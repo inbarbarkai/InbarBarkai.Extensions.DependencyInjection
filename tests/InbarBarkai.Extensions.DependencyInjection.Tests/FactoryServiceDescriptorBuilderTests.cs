@@ -17,11 +17,11 @@ namespace InbarBarkai.Extensions.DependencyInjection.Tests
         /// </summary>
         [MemberData(nameof(AddFactoryServiceSuccessData))]
         [Theory]
-        public void AddFactoryServiceSuccess(IServiceDescriptorBuilder builder, Type serviceType)
+        public void AddFactoryServiceSuccess(IServiceDescriptorBuilder builder, Type serviceType, string expectedString, int expectedInteger)
         {
             var services = new ServiceCollection()
-                .AddSingleton("something");
-            builder.WithParameter(pi => pi.ParameterType == typeof(int), (sp, pi) => 10)
+                .AddSingleton(expectedString);
+            builder.WithParameter(pi => pi.ParameterType == typeof(int), (sp, pi) => expectedInteger)
                 .BuildAndAddTo(services);
 
             using var serviceProvider = services.BuildServiceProvider();
@@ -39,14 +39,14 @@ namespace InbarBarkai.Extensions.DependencyInjection.Tests
             instance1.Should().BeOfType<ServiceWithConstructorArguments>();
             instance2.Should().BeOfType<ServiceWithConstructorArguments>();
 
-            ((ServiceWithConstructorArguments)instance1).Integer.Should().Be(10);
-            ((ServiceWithConstructorArguments)instance1).String.Should().Be("something");
+            ((ServiceWithConstructorArguments)instance1).Integer.Should().Be(expectedInteger);
+            ((ServiceWithConstructorArguments)instance1).String.Should().Be(expectedString);
         }
 
         /// <summary>
-        /// Gets the data for the <see cref="AddFactoryServiceSuccess(IServiceDescriptorBuilder, Type)"/> test.
+        /// Gets the data for the <see cref="AddFactoryServiceSuccess(IServiceDescriptorBuilder, Type, string, int)"/> test.
         /// </summary>
-        /// <returns>The data for the <see cref="AddFactoryServiceSuccess(IServiceDescriptorBuilder, Type)"/> test.</returns>
+        /// <returns>The data for the <see cref="AddFactoryServiceSuccess(IServiceDescriptorBuilder, Type, string, int)"/> test.</returns>
         public static IEnumerable<object[]> AddFactoryServiceSuccessData()
         {
             yield return new object[]
@@ -54,7 +54,9 @@ namespace InbarBarkai.Extensions.DependencyInjection.Tests
                    ServiceDescriptorBuilder.Create<ServiceWithConstructorArguments>()
                         .InstancePerRequest()
                         .AsImplementedInterfaces(),
-                   typeof(ISimpleService1)
+                   typeof(ISimpleService1),
+                   "something",
+                   10
             };
 
             yield return new object[]
@@ -62,7 +64,9 @@ namespace InbarBarkai.Extensions.DependencyInjection.Tests
                    ServiceDescriptorBuilder.Create<ServiceWithConstructorArguments>()
                         .InstancePerRequest()
                         .AsImplementedInterfaces(),
-                   typeof(ISimpleService2)
+                   typeof(ISimpleService2),
+                   "something",
+                   10
             };
 
             yield return new object[]
@@ -70,14 +74,61 @@ namespace InbarBarkai.Extensions.DependencyInjection.Tests
                    ServiceDescriptorBuilder.Create<ServiceWithConstructorArguments>()
                         .InstancePerRequest()
                         .As<ISimpleService1>(),
-                   typeof(ISimpleService1)
+                   typeof(ISimpleService1),
+                   "something",
+                   10
             };
 
             yield return new object[]
             {
                    ServiceDescriptorBuilder.Create<ServiceWithConstructorArguments>()
                         .InstancePerRequest(),
-                   typeof(ServiceWithConstructorArguments)
+                   typeof(ServiceWithConstructorArguments),
+                   "something",
+                   10
+            };
+
+            yield return new object[]
+            {
+                   ServiceDescriptorBuilder.Create<ServiceWithConstructorArguments>()
+                        .WithConstructor(ci => ci.GetParameters().Length == 1)
+                        .InstancePerRequest()
+                        .AsImplementedInterfaces(),
+                   typeof(ISimpleService1),
+                   "something",
+                   0
+            };
+
+            yield return new object[]
+            {
+                   ServiceDescriptorBuilder.Create<ServiceWithConstructorArguments>()
+                        .WithConstructor(ci => ci.GetParameters().Length == 1)
+                        .InstancePerRequest()
+                        .AsImplementedInterfaces(),
+                   typeof(ISimpleService2),
+                   "something",
+                   0
+            };
+
+            yield return new object[]
+            {
+                   ServiceDescriptorBuilder.Create<ServiceWithConstructorArguments>()
+                        .WithConstructor(ci => ci.GetParameters().Length == 1)
+                        .InstancePerRequest()
+                        .As<ISimpleService1>(),
+                   typeof(ISimpleService1),
+                   "something",
+                   0
+            };
+
+            yield return new object[]
+            {
+                   ServiceDescriptorBuilder.Create<ServiceWithConstructorArguments>()
+                        .WithConstructor(ci => ci.GetParameters().Length == 1)
+                        .InstancePerRequest(),
+                   typeof(ServiceWithConstructorArguments),
+                   "something",
+                   0
             };
         }
     }

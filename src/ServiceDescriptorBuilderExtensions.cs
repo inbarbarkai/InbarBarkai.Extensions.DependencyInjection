@@ -119,6 +119,28 @@ namespace InbarBarkai.Extensions.DependencyInjection
         }
 
         /// <summary>
+        /// Configures the builder to resolve a constructor.
+        /// </summary>
+        /// <param name="builder">The service descriptor builder.</param>
+        /// <param name="isMatch">A predicate to define if the constructor should be used.</param>
+        /// <returns>
+        /// The modified service descriptor builder.
+        /// </returns>
+        public static IServiceDescriptorBuilder WithConstructor(this IServiceDescriptorBuilder builder, Predicate<ConstructorInfo> isMatch)
+        {
+            var factoryBuilder = builder as FactoryServiceDescriptorBuilder;
+
+            if (factoryBuilder == null)
+            {
+                factoryBuilder = new FactoryServiceDescriptorBuilder(builder);
+            }
+
+            factoryBuilder.ConstrcutorFinder = new DelegateConstructorFinder(isMatch);
+
+            return factoryBuilder;
+        }
+
+        /// <summary>
         /// Builds the service descriptors and add them to to the specified service collection.
         /// </summary>
         /// <param name="builder">The service descriptor builder.</param>

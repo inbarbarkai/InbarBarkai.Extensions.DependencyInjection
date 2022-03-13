@@ -10,7 +10,7 @@ namespace InbarBarkai.Extensions.DependencyInjection.Internal
             var constructors = type.GetConstructors();
             if (constructors.Length == 0)
             {
-                throw new MissingMethodException($"Could not find constructor for '{type.FullName}'.");
+                throw ConstructorFinderHelper.ThrowMissingConstructorException(type);
             }
             return constructors[0];
         }
