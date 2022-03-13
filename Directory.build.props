@@ -3,7 +3,7 @@
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="GitVersion.MsBuild" Version="5.6.10*">
+        <PackageReference Include="GitVersion.MsBuild" Version="5.9.0">
             <PrivateAssets>All</PrivateAssets>
         </PackageReference>
         <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="6.0.0">
