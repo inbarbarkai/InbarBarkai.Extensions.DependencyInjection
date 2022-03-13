@@ -104,7 +104,7 @@ namespace InbarBarkai.Extensions.DependencyInjection
         /// <returns>
         /// The modified service descriptor builder.
         /// </returns>
-        public static IServiceDescriptorBuilder WithParameter(this IServiceDescriptorBuilder builder, Func<ParameterInfo, bool> isMatch, Expression<Func<IServiceProvider, ParameterInfo, object>> resolve)
+        public static IServiceDescriptorBuilder WithParameter(this IServiceDescriptorBuilder builder, Predicate<ParameterInfo> isMatch, Expression<Func<IServiceProvider, ParameterInfo, object>> resolve)
         {
             var factoryBuilder = builder as FactoryServiceDescriptorBuilder;
 

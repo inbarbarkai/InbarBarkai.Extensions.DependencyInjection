@@ -6,10 +6,10 @@ namespace InbarBarkai.Extensions.DependencyInjection.Internal
 {
     internal class ParameterResolver : IEquatable<ParameterResolver>
     {
-        public Func<ParameterInfo, bool> IsMatch { get; }
+        public Predicate<ParameterInfo> IsMatch { get; }
         public Expression<Func<IServiceProvider, ParameterInfo, object>> Resolve { get; }
 
-        public ParameterResolver(Func<ParameterInfo, bool> isMatch, Expression<Func<IServiceProvider, ParameterInfo, object>> resolve)
+        public ParameterResolver(Predicate<ParameterInfo> isMatch, Expression<Func<IServiceProvider, ParameterInfo, object>> resolve)
         {
             this.IsMatch = isMatch;
             this.Resolve = resolve;
