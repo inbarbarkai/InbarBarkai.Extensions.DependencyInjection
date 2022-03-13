@@ -33,6 +33,10 @@ namespace InbarBarkai.Extensions.DependencyInjection
         /// </value>
         Type ImplementationType { get; }
 
-        void AddTo(IServiceCollection services);
+        /// <summary>
+        /// Builds the service descriptors based of the configuration.
+        /// </summary>
+        /// <returns>The built <see cref="ServiceDescriptor"/> instances.</returns>
+        IEnumerable<ServiceDescriptor> Build();
     }
 }

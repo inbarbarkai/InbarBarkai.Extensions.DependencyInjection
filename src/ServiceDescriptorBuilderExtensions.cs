@@ -123,5 +123,20 @@ namespace InbarBarkai.Extensions.DependencyInjection
 
             return factoryBuilder;
         }
+
+        /// <summary>
+        /// Builds the service descriptors and add them to to the specified service collection.
+        /// </summary>
+        /// <param name="builder">The service descriptor builder.</param>
+        /// <param name="services">The service collection to add the descriptors to.</param>
+        public static void BuildAndAddTo(this IServiceDescriptorBuilder builder, IServiceCollection services)
+        {
+            MakeSure.NotNull(builder, nameof(builder));
+            MakeSure.NotNull(services, nameof(services));
+            foreach (var item in builder.Build())
+            {
+                services.Add(item);
+            }
+        }
     }
 }

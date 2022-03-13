@@ -22,7 +22,7 @@ namespace InbarBarkai.Extensions.DependencyInjection.Tests
             var services = new ServiceCollection()
                 .AddSingleton("something");
             builder.WithParameter(pi => pi.ParameterType == typeof(int), (sp, pi) => 10)
-                .AddTo(services);
+                .BuildAndAddTo(services);
 
             using var serviceProvider = services.BuildServiceProvider();
 

@@ -21,7 +21,7 @@ namespace InbarBarkai.Extensions.DependencyInjection.Tests
             var services = new ServiceCollection();
             ServiceDescriptorBuilder.Create<SimpleService>()
                 .InstancePerRequest()
-                .AddTo(services);
+                .BuildAndAddTo(services);
 
             using var serviceProvider = services.BuildServiceProvider();
 
@@ -46,7 +46,7 @@ namespace InbarBarkai.Extensions.DependencyInjection.Tests
             var services = new ServiceCollection();
             ServiceDescriptorBuilder.Create<SimpleService>()
                 .InstancePerScope()
-                .AddTo(services);
+                .BuildAndAddTo(services);
 
             using var serviceProvider = services.BuildServiceProvider();
             using var scope1 = serviceProvider.CreateScope();
@@ -77,7 +77,7 @@ namespace InbarBarkai.Extensions.DependencyInjection.Tests
             var services = new ServiceCollection();
             ServiceDescriptorBuilder.Create<SimpleService>()
                 .SingleInstance()
-                .AddTo(services);
+                .BuildAndAddTo(services);
 
             using var serviceProvider = services.BuildServiceProvider();
             using var scope1 = serviceProvider.CreateScope();
@@ -108,7 +108,7 @@ namespace InbarBarkai.Extensions.DependencyInjection.Tests
             var services = new ServiceCollection();
             ServiceDescriptorBuilder.Create<SimpleService>()
                 .As<ISimpleService1>()
-                .AddTo(services);
+                .BuildAndAddTo(services);
 
             using var serviceProvider = services.BuildServiceProvider();
 
@@ -148,7 +148,7 @@ namespace InbarBarkai.Extensions.DependencyInjection.Tests
             var services = new ServiceCollection();
 
             builder.ServiceTypes.Count.Should().Be(2);
-            builder.AddTo(services);
+            builder.BuildAndAddTo(services);
 
             using var serviceProvider = services.BuildServiceProvider();
 

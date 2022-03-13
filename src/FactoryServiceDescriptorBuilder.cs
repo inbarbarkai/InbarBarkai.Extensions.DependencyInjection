@@ -27,24 +27,24 @@ namespace InbarBarkai.Extensions.DependencyInjection
             this.ConstrcutorFinder = new DefaultConstructorFinder();
         }
 
-        public override void AddTo(IServiceCollection services)
+        public override IEnumerable<ServiceDescriptor> Build()
         {
             var factory = CreateFactoryExpression();
 
             if (this.ServiceTypes.Count == 0)
             {
-                services.Add(ServiceDescriptor.Describe(this.ImplementationType, factory, this.ServiceLifetime));
+                yield return ServiceDescriptor.Describe(this.ImplementationType, factory, this.ServiceLifetime);
             }
             else if (this.ServiceTypes.Count == 1)
             {
-                services.Add(ServiceDescriptor.Describe(this.ServiceTypes.First(), factory, this.ServiceLifetime));
+                yield return ServiceDescriptor.Describe(this.ServiceTypes.First(), factory, this.ServiceLifetime);
             }
             else
             {
-                services.Add(ServiceDescriptor.Describe(this.ImplementationType, factory, this.ServiceLifetime));
+                yield return ServiceDescriptor.Describe(this.ImplementationType, factory, this.ServiceLifetime);
                 foreach (var serviceType in this.ServiceTypes)
                 {
-                    services.Add(ServiceDescriptor.Describe(serviceType, sp => sp.GetRequiredService(this.ImplementationType), this.ServiceLifetime));
+                    yield return ServiceDescriptor.Describe(serviceType, sp => sp.GetRequiredService(this.ImplementationType), this.ServiceLifetime);
                 }
             }
         }

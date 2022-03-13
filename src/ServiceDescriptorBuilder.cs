@@ -65,6 +65,7 @@ namespace InbarBarkai.Extensions.DependencyInjection
             return ServiceDescriptorBuilder.Create(typeof(T));
         }
 
-        public abstract void AddTo(IServiceCollection services);
+        /// <inheritdoc />
+        public abstract IEnumerable<ServiceDescriptor> Build();
     }
 }
