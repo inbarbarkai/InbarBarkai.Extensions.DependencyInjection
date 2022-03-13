@@ -28,5 +28,8 @@ namespace Benchmarks.Adapters
         {
             _serviceProvider?.Dispose();
         }
+
+        public override string ToString()
+            => nameof(DefaultIoC);
     }
 }
