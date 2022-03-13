@@ -5,8 +5,14 @@ using Xunit;
 
 namespace InbarBarkai.Extensions.DependencyInjection.Tests.Internal
 {
+    /// <summary>
+    /// Contains tests for the <see cref="DefaultConstructorFinder"/> class.
+    /// </summary>
     public class DefaultConstructorFinderTests
     {
+        /// <summary>
+        /// Tests finding a constructor with <see cref="MissingMethodException"/> due to inability to find proper constructor.
+        /// </summary>
         [Fact]
         public void FindNotConstructor()
         {

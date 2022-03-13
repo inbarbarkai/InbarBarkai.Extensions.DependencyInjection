@@ -6,8 +6,16 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace InbarBarkai.Extensions.DependencyInjection
 {
+    /// <summary>
+    /// Contains extension methods for <see cref="IServiceDescriptorBuilder"/>.
+    /// </summary>
     public static class ServiceDescriptorBuilderExtensions
     {
+        /// <summary>
+        /// Sets the lifetime of the service as <see cref="ServiceLifetime.Transient"/>.
+        /// </summary>
+        /// <param name="builder">The service descriptor builder.</param>
+        /// <returns>The modified service descriptor builder.</returns>
         public static IServiceDescriptorBuilder InstancePerRequest(this IServiceDescriptorBuilder builder)
         {
             MakeSure.NotNull(builder, nameof(builder));
@@ -15,6 +23,11 @@ namespace InbarBarkai.Extensions.DependencyInjection
             return builder;
         }
 
+        /// <summary>
+        /// Sets the lifetime of the service as <see cref="ServiceLifetime.Scoped"/>.
+        /// </summary>
+        /// <param name="builder">The service descriptor builder.</param>
+        /// <returns>The modified service descriptor builder.</returns>
         public static IServiceDescriptorBuilder InstancePerScope(this IServiceDescriptorBuilder builder)
         {
             MakeSure.NotNull(builder, nameof(builder));
@@ -22,6 +35,11 @@ namespace InbarBarkai.Extensions.DependencyInjection
             return builder;
         }
 
+        /// <summary>
+        /// Sets the lifetime of the service as <see cref="ServiceLifetime.Singleton"/>.
+        /// </summary>
+        /// <param name="builder">The service descriptor builder.</param>
+        /// <returns>The modified service descriptor builder.</returns>
         public static IServiceDescriptorBuilder SingleInstance(this IServiceDescriptorBuilder builder)
         {
             MakeSure.NotNull(builder, nameof(builder));
@@ -29,6 +47,15 @@ namespace InbarBarkai.Extensions.DependencyInjection
             return builder;
         }
 
+        /// <summary>
+        /// Configures the service to be registered as the provided type.
+        /// </summary>
+        /// <param name="builder">The service descriptor builder.</param>
+        /// <param name="serviceType">The type of the service to register as.</param>
+        /// <returns>
+        /// The modified service descriptor builder.
+        /// </returns>
+        /// <exception cref="System.InvalidOperationException">The implementation type cannot be assigned to the service type.</exception>
         public static IServiceDescriptorBuilder As(this IServiceDescriptorBuilder builder, Type serviceType)
         {
             MakeSure.NotNull(builder, nameof(builder));
@@ -44,11 +71,26 @@ namespace InbarBarkai.Extensions.DependencyInjection
             throw new InvalidOperationException($"The type '{builder.ImplementationType.FullName}' cannot be assigned to '{serviceType.FullName}'");
         }
 
+        /// <summary>
+        /// Configures the service to be registered as the provided type.
+        /// </summary>
+        /// <typeparam name="TServiceType">The type of the service to register as.</typeparam>
+        /// <param name="builder">The service descriptor builder.</param>
+        /// <returns>
+        /// The modified service descriptor builder.
+        /// </returns>
         public static IServiceDescriptorBuilder As<TServiceType>(this IServiceDescriptorBuilder builder)
         {
             return builder.As(typeof(TServiceType));
         }
 
+        /// <summary>
+        /// Configures the service to be registered as its implemented interfaces.
+        /// </summary>
+        /// <param name="builder">The service descriptor builder.</param>
+        /// <returns>
+        /// The modified service descriptor builder.
+        /// </returns>
         public static IServiceDescriptorBuilder AsImplementedInterfaces(this IServiceDescriptorBuilder builder)
         {
             MakeSure.NotNull(builder, nameof(builder));
@@ -59,6 +101,15 @@ namespace InbarBarkai.Extensions.DependencyInjection
             return builder;
         }
 
+        /// <summary>
+        /// Configures the builder to resolve a constructor argument.
+        /// </summary>
+        /// <param name="builder">The service descriptor builder.</param>
+        /// <param name="isMatch">A predicate to define if the argument should be resolved.</param>
+        /// <param name="resolve">A callback to resolve the value of the argument.</param>
+        /// <returns>
+        /// The modified service descriptor builder.
+        /// </returns>
         public static IServiceDescriptorBuilder WithParameter(this IServiceDescriptorBuilder builder, Func<ParameterInfo, bool> isMatch, Expression<Func<IServiceProvider, ParameterInfo, object>> resolve)
         {
             var factoryBuilder = builder as FactoryServiceDescriptorBuilder;

@@ -4,12 +4,33 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace InbarBarkai.Extensions.DependencyInjection
 {
+    /// <summary>
+    /// Defines the functionality of a service descriptor builder.
+    /// </summary>
     public interface IServiceDescriptorBuilder
     {
+        /// <summary>
+        /// Gets or sets the service lifetime.
+        /// </summary>
+        /// <value>
+        /// The service lifetime.
+        /// </value>
         ServiceLifetime ServiceLifetime { get; set; }
 
-        ICollection<Type> ServiceTypes { get; set; }
+        /// <summary>
+        /// Gets the service types.
+        /// </summary>
+        /// <value>
+        /// The service types.
+        /// </value>
+        ICollection<Type> ServiceTypes { get; }
 
+        /// <summary>
+        /// Gets the type of the implementation.
+        /// </summary>
+        /// <value>
+        /// The type of the implementation.
+        /// </value>
         Type ImplementationType { get; }
 
         void AddTo(IServiceCollection services);

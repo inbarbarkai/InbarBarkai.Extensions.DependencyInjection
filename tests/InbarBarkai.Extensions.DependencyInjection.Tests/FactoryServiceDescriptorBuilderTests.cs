@@ -7,8 +7,14 @@ using Xunit;
 
 namespace InbarBarkai.Extensions.DependencyInjection.Tests
 {
+    /// <summary>
+    /// Contains tests for the <see cref="FactoryServiceDescriptorBuilder"/>.
+    /// </summary>
     public class FactoryServiceDescriptorBuilderTests
     {
+        /// <summary>
+        /// Tests adding service with generated factory method with successful outcome.
+        /// </summary>
         [MemberData(nameof(AddFactoryServiceSuccessData))]
         [Theory]
         public void AddFactoryServiceSuccess(IServiceDescriptorBuilder builder, Type serviceType)
@@ -37,6 +43,10 @@ namespace InbarBarkai.Extensions.DependencyInjection.Tests
             ((ServiceWithConstructorArguments)instance1).String.Should().Be("something");
         }
 
+        /// <summary>
+        /// Gets the data for the <see cref="AddFactoryServiceSuccess(IServiceDescriptorBuilder, Type)"/> test.
+        /// </summary>
+        /// <returns>The data for the <see cref="AddFactoryServiceSuccess(IServiceDescriptorBuilder, Type)"/> test.</returns>
         public static IEnumerable<object[]> AddFactoryServiceSuccessData()
         {
             yield return new object[]

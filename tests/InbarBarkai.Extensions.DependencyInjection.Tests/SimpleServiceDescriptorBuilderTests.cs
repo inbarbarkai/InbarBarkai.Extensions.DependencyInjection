@@ -7,8 +7,14 @@ using System;
 
 namespace InbarBarkai.Extensions.DependencyInjection.Tests
 {
+    /// <summary>
+    /// Contains tests for the <see cref="SimpleServiceDescriptorBuilder"/>.
+    /// </summary>
     public class SimpleServiceDescriptorBuilderTests
     {
+        /// <summary>
+        /// Tests adding transient service with successful outcome.
+        /// </summary>
         [Fact]
         public void AddSimpleServiceTransientSuccess()
         {
@@ -31,6 +37,9 @@ namespace InbarBarkai.Extensions.DependencyInjection.Tests
             instance1.Should().NotBe(instance2);
         }
 
+        /// <summary>
+        /// Tests adding scoped service with successful outcome.
+        /// </summary>
         [Fact]
         public void AddSimpleServiceScopedSuccess()
         {
@@ -59,6 +68,9 @@ namespace InbarBarkai.Extensions.DependencyInjection.Tests
                 .Be(instance1);
         }
 
+        /// <summary>
+        /// Tests adding singleton service with successful outcome.
+        /// </summary>
         [Fact]
         public void AddSimpleServiceSingletonSuccess()
         {
@@ -87,6 +99,9 @@ namespace InbarBarkai.Extensions.DependencyInjection.Tests
                 .Be(instance1);
         }
 
+        /// <summary>
+        /// Tests adding service as an interface with successful outcome.
+        /// </summary>
         [Fact]
         public void AddSimpleServiceAsInterfaceSuccess()
         {
@@ -110,6 +125,10 @@ namespace InbarBarkai.Extensions.DependencyInjection.Tests
                 .BeOfType<SimpleService>();
         }
 
+
+        /// <summary>
+        /// Tests adding service as an interface with exception due to incompatibility.
+        /// </summary>
         [Fact]
         public void AddSimpleServiceAsInterfaceInvalidOperationExcetpion()
         {
@@ -119,6 +138,9 @@ namespace InbarBarkai.Extensions.DependencyInjection.Tests
             action.Should().Throw<InvalidOperationException>();
         }
 
+        /// <summary>
+        /// Tests adding service as its implemented interfaces with successful outcome.
+        /// </summary>
         [MemberData(nameof(AddSimpleServiceAsImplementedInterfacesSuccessData))]
         [Theory]
         public void AddSimpleServiceAsImplementedInterfacesSuccess(IServiceDescriptorBuilder builder)
@@ -146,6 +168,10 @@ namespace InbarBarkai.Extensions.DependencyInjection.Tests
             instance1.Should().Be(instance2);
         }
 
+        /// <summary>
+        /// Gets the data for the <see cref="AddSimpleServiceAsImplementedInterfacesSuccess(IServiceDescriptorBuilder)"/> test.
+        /// </summary>
+        /// <returns>The data for the <see cref="AddSimpleServiceAsImplementedInterfacesSuccess(IServiceDescriptorBuilder)"/> test.</returns>
         public static IEnumerable<object[]> AddSimpleServiceAsImplementedInterfacesSuccessData()
         {
             yield return new object[]
@@ -164,6 +190,9 @@ namespace InbarBarkai.Extensions.DependencyInjection.Tests
             };
         }
 
+        /// <summary>
+        /// Tests creating a service descriptor with <see cref="NullReferenceException"/> due to null implementation type.
+        /// </summary>
         [Fact]
         public void CreateNullReferenceException()
         {
