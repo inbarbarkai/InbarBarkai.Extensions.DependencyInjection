@@ -130,12 +130,12 @@ namespace InbarBarkai.Extensions.DependencyInjection.Tests
         /// Tests adding service as an interface with exception due to incompatibility.
         /// </summary>
         [Fact]
-        public void AddSimpleServiceAsInterfaceInvalidOperationExcetpion()
+        public void AddSimpleServiceAsInterfaceArgumentException()
         {
             Action action = () => ServiceDescriptorBuilder.Create<SimpleService>()
                 .As<ServiceWithConstructorArguments>();
 
-            action.Should().Throw<InvalidOperationException>();
+            action.Should().Throw<ArgumentException>();
         }
 
         /// <summary>

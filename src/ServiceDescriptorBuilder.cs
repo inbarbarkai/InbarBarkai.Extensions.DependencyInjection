@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using InbarBarkai.Extensions.DependencyInjection.Internal;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace InbarBarkai.Extensions.DependencyInjection
@@ -25,8 +26,9 @@ namespace InbarBarkai.Extensions.DependencyInjection
         /// <param name="serviceType">The implementation type of the service.</param>
         protected ServiceDescriptorBuilder(Type serviceType)
         {
+            MakeSure.NotNull(serviceType, nameof(serviceType));
             this.ImplementationType = serviceType;
-            this.ServiceTypes = new HashSet<Type>();
+            this.ServiceTypes = new ServiceTypeCollection(serviceType);
             this.ServiceLifetime = ServiceLifetime.Transient;
         }
 
@@ -48,10 +50,6 @@ namespace InbarBarkai.Extensions.DependencyInjection
         /// <returns>The newly created <see cref="IServiceDescriptorBuilder"/>.</returns>
         public static IServiceDescriptorBuilder Create(Type serviceType)
         {
-            if (serviceType is null)
-            {
-                throw new ArgumentNullException(nameof(serviceType));
-            }
             return new SimpleServiceDescriptorBuilder(serviceType);
         }
 

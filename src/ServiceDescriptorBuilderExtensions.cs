@@ -55,20 +55,14 @@ namespace InbarBarkai.Extensions.DependencyInjection
         /// <returns>
         /// The modified service descriptor builder.
         /// </returns>
-        /// <exception cref="System.InvalidOperationException">The implementation type cannot be assigned to the service type.</exception>
         public static IServiceDescriptorBuilder As(this IServiceDescriptorBuilder builder, Type serviceType)
         {
             MakeSure.NotNull(builder, nameof(builder));
             MakeSure.NotNull(serviceType, nameof(serviceType));
 
-            if (serviceType.IsAssignableFrom(builder.ImplementationType))
-            {
-                builder.ServiceTypes.Add(serviceType);
+            builder.ServiceTypes.Add(serviceType);
 
-                return builder;
-            }
-
-            throw new InvalidOperationException($"The type '{builder.ImplementationType.FullName}' cannot be assigned to '{serviceType.FullName}'");
+            return builder;
         }
 
         /// <summary>
