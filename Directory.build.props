@@ -1,6 +1,9 @@
 <Project>
     <PropertyGroup>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<Authors>Inbar Barkai</Authors>
+		<PackageProjectUrl>https://github.com/inbarbarkai/InbarBarkai.Extensions.DependencyInjection</PackageProjectUrl>
+		<RepositoryUrl>$(PackageProjectUrl)</RepositoryUrl>
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="GitVersion.MsBuild" Version="5.9.0">
