@@ -1,4 +1,4 @@
-name: .NET
+name: Build and Publish
 
 on:
   workflow_dispatch:
@@ -7,6 +7,10 @@ on:
         description: 'Branch name to build'     
         required: true
         default: 'master'
+      config:
+        description: 'Build configuration'     
+        required: true
+        default: 'Release'
 
 jobs:
   build:
@@ -27,6 +31,12 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build -c ${{ github.event.inputs.config }} --no-restore
     - name: Test
-      run: dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage" --settings coverlet.runsettings
+      run: dotnet test -c ${{ github.event.inputs.config }} --no-build --verbosity normal --collect:"XPlat Code Coverage" --settings coverlet.runsettings
+    - name: Publish
+      run: |
+        cd ./src/ \
+        && dotnet pack --include-symbols -c ${{ github.event.inputs.config }} -o ./bin/ \
+        && cd ./bin/ \
+        && dotnet nuget push "*.nupkg" -k ${{ secrets.NuGetApiKey }} -s https://api.nuget.org/v3/index.json
