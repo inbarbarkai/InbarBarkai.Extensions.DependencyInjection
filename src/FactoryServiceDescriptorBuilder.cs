@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using InbarBarkai.Extensions.DependencyInjection.Internal;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -21,6 +22,8 @@ namespace InbarBarkai.Extensions.DependencyInjection
         }
 
         public ICollection<ParameterResolver> ParameterResolvers { get; } = new HashSet<ParameterResolver>();
+
+        public PropertyResolversMap PropertyResolvers { get; } = new PropertyResolversMap();
 
         public FactoryServiceDescriptorBuilder(IServiceDescriptorBuilder builder) : base(builder)
         {
@@ -60,13 +63,14 @@ namespace InbarBarkai.Extensions.DependencyInjection
                 CreateResolveParameterExpression(serviceProvider, arguments, body, parameter);
             }
 
-            body.Add(Expression.Convert(Expression.New(constructor, arguments), typeof(object)));
+            var initialization = CreateInitializationExpression(serviceProvider, constructor, arguments);
+            body.Add(Expression.Convert(initialization, typeof(object)));
             var block = Expression.Block(arguments, body);
             var factory = Expression.Lambda<Func<IServiceProvider, object>>(block, serviceProvider);
             return factory.Compile();
         }
 
-        private void CreateResolveParameterExpression(ParameterExpression serviceProvider, List<ParameterExpression> arguments, List<Expression> body, System.Reflection.ParameterInfo parameter)
+        private void CreateResolveParameterExpression(ParameterExpression serviceProvider, List<ParameterExpression> arguments, List<Expression> body, ParameterInfo parameter)
         {
             var customResolver = this.ParameterResolvers.FirstOrDefault(r => r.IsMatch(parameter));
             Expression value;
@@ -86,6 +90,28 @@ namespace InbarBarkai.Extensions.DependencyInjection
             var argument = Expression.Parameter(parameter.ParameterType, parameter.Name);
             arguments.Add(argument);
             body.Add(Expression.Assign(argument, value));
+        }
+
+        private Expression CreateInitializationExpression(ParameterExpression serviceProvider, ConstructorInfo constructor, List<ParameterExpression> arguments)
+        {
+            var @new = Expression.New(constructor, arguments);
+            if (this.PropertyResolvers.Count == 0)
+            {
+                return @new;
+            }
+            var memberAssignments = this.PropertyResolvers.Select(t => CreateResolvePropertyExperession(serviceProvider, t.Key, t.Value));
+            var result = Expression.MemberInit(@new, memberAssignments);
+            return result;
+        }
+
+        private MemberAssignment CreateResolvePropertyExperession(ParameterExpression serviceProvider, PropertyInfo propertyInfo, PropertyResolver propertyResolver)
+        {
+            var invoke = Expression.Convert(
+                    Expression.Invoke(propertyResolver.Resolve,
+                                      serviceProvider,
+                                      Expression.Constant(propertyInfo)),
+                    propertyInfo.PropertyType);
+            return Expression.Bind(propertyInfo, invoke);
         }
     }
 }
